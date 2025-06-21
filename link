@@ -6,8 +6,4 @@ https://www.tenable.com/downloads/nessus?utm_source=nessus-trial-thank-you-updat
 
 https://drive.google.com/drive/folders/1ih3eH5LgJ4HWCIZeYCS0aMaDkkaSNzY2?usp=drive_link
 
-
-curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elastic.gpg
-echo "deb [signed-by=/usr/share/keyrings/elastic.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
-sudo apt update
-sudo apt install elasticsearch -y
+wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/9.2.1/linux/splunk-9.2.1-77f73c9edb85-linux-2.6-amd64.deb'
