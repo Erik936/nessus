@@ -10,15 +10,11 @@ wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/9.2.1/l
 
 https://www.starwindsoftware.com/tmplink/starwindconverter.exe
 
-
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 
-int main (int arg1, char** arg2)
-{
-	char buffer[15];
-	strcpy(buffer, arg2[1]);
-	int status = system("nc -l -p 4444");
-	return 0;
+int main() {
+    for (int i = 0; i < 100; i++) {
+        putchar(0x90);  // 0x90 = NOP
+    }
+    return 0;
 }
