@@ -10,40 +10,23 @@ wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/9.2.1/l
 
 https://www.starwindsoftware.com/tmplink/starwindconverter.exe
 
-#Checking all DLLs on a system to verify valid signature certificates
+#Show what PIDs a DLL is associated with
 
+# Specify the DLL path (update with your desired DLL)
+$dllPath = "C:\Windows\System32\msvcrt.dll"
+
+# Get the list of processes and their modules
 Get-Process | ForEach-Object {
-    $_.Modules | ForEach-Object {
+    $process = $_
+    $process.Modules | ForEach-Object {
         $module = $_
-        $path = $module.FileName
-        if (Test-Path $path) {
-            $sig = Get-AuthenticodeSignature $path
+        if ($module.FileName -eq $dllPath) {
             [PSCustomObject]@{
-                ProcessName = $_.ProcessName
+                ProcessName = $process.ProcessName
+                PID         = $process.Id
                 ModuleName  = $module.ModuleName
-                Signed      = $sig.Status
-                Path        = $path
+                Path        = $module.FileName
             }
         }
     }
-} | Format-Table -Property ProcessName, ModuleName, Signed, Path
-
-#Seeing if there any unsigned DLLs on the system
-
-Get-Process | ForEach-Object {
-    $_.Modules | ForEach-Object {
-        $module = $_
-        $path = $module.FileName
-        if (Test-Path $path) {
-            $sig = Get-AuthenticodeSignature $path
-            if ($sig.Status -ne 'Valid') {
-                [PSCustomObject]@{
-                    ProcessName = $_.ProcessName
-                    ModuleName  = $module.ModuleName
-                    Signed      = $sig.Status
-                    Path        = $path
-                }
-            }
-        }
-    }
-} | Format-Table -Property ProcessName, ModuleName, Signed, Path
+} | Format-Table -Property ProcessName, PID, ModuleName, Path
