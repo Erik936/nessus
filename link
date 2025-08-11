@@ -10,12 +10,40 @@ wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/9.2.1/l
 
 https://www.starwindsoftware.com/tmplink/starwindconverter.exe
 
-#include <stdio.h>
-#include <unistd.h>
+#Checking all DLLs on a system to verify valid signature certificates
 
-int main() {
-    while (1) {
-        __asm__("nop");
+Get-Process | ForEach-Object {
+    $_.Modules | ForEach-Object {
+        $module = $_
+        $path = $module.FileName
+        if (Test-Path $path) {
+            $sig = Get-AuthenticodeSignature $path
+            [PSCustomObject]@{
+                ProcessName = $_.ProcessName
+                ModuleName  = $module.ModuleName
+                Signed      = $sig.Status
+                Path        = $path
+            }
+        }
     }
-    return 0;
-}
+} | Format-Table -Property ProcessName, ModuleName, Signed, Path
+
+#Seeing if there any unsigned DLLs on the system
+
+Get-Process | ForEach-Object {
+    $_.Modules | ForEach-Object {
+        $module = $_
+        $path = $module.FileName
+        if (Test-Path $path) {
+            $sig = Get-AuthenticodeSignature $path
+            if ($sig.Status -ne 'Valid') {
+                [PSCustomObject]@{
+                    ProcessName = $_.ProcessName
+                    ModuleName  = $module.ModuleName
+                    Signed      = $sig.Status
+                    Path        = $path
+                }
+            }
+        }
+    }
+} | Format-Table -Property ProcessName, ModuleName, Signed, Path
