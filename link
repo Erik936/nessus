@@ -1,32 +1,11 @@
-https://drive.google.com/drive/folders/1eIrDFlJYMqkvOUiCpsYNCuei6rd6NV6Z?usp=drive_link
+5f4dcc3b5aa765d61d8327deb882cf99
 
-https://www.tenable.com/products/nessus/nessus-professional/evaluate
+$2a$12$4sZ.G.v5C7QvQ/h.3g.7AOiO7K.t8Z0vY7L3vE3iR.w.zU8yB8z9y
 
-https://www.tenable.com/downloads/nessus?utm_source=nessus-trial-thank-you-update&loginAttempted=true
+5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
 
-https://drive.google.com/drive/folders/1ih3eH5LgJ4HWCIZeYCS0aMaDkkaSNzY2?usp=drive_link
+ef92b778bafe771e89245b89ec5b4894bd454378f82855761545bf35a4d2d394
 
-wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/9.2.1/linux/splunk-9.2.1-77f73c9edb85-linux-2.6-amd64.deb'
+b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
 
-https://www.starwindsoftware.com/tmplink/starwindconverter.exe
-
-#Show what PIDs a DLL is associated with
-
-# Specify the DLL path (update with your desired DLL)
-$dllPath = "C:\Windows\System32\msvcrt.dll"
-
-# Get the list of processes and their modules
-Get-Process | ForEach-Object {
-    $process = $_
-    $process.Modules | ForEach-Object {
-        $module = $_
-        if ($module.FileName -eq $dllPath) {
-            [PSCustomObject]@{
-                ProcessName = $process.ProcessName
-                PID         = $process.Id
-                ModuleName  = $module.ModuleName
-                Path        = $module.FileName
-            }
-        }
-    }
-} | Format-Table -Property ProcessName, PID, ModuleName, Path
+8846f7eaee8fb117ad06bdd830b7586c
