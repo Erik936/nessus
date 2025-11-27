@@ -1,0 +1,16 @@
+# 1. Define your target and credentials
+$DC_IP = "192.168.0.49"
+$User = "texas\erik"
+$Pass = "P@$$Word"
+
+# 2. Create the connection object (Bind)
+$Root = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$DC_IP", $User, $Pass)
+
+# 3. Create the Searcher looking at that Root
+$Searcher = New-Object System.DirectoryServices.DirectorySearcher($Root)
+
+# 4. Set your filter (e.g., Find all Domain Admins)
+$Searcher.Filter = "(memberOf=CN=Domain Admins,CN=Users,DC=texas,DC=local)"
+
+# 5. Run it
+$Searcher.FindAll()
