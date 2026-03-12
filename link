@@ -1,13 +1,40 @@
-5f4dcc3b5aa765d61d8327deb882cf99
+terraform {
+  required_providers {
+    hyperv = {
+      source  = "taliesin/hyperv"
+      version = "1.0.3"
+    }
+  }
+}
 
-$2a$12$4sZ.G.v5C7QvQ/h.3g.7AOiO7K.t8Z0vY7L3vE3iR.w.zU8yB8z9y
+provider "hyperv" {
+  user     = "Administrator"
+  password = "YourPassword"
+  host     = "127.0.0.1" # Change if managing a remote host
+}
 
-5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+# 1. Create an empty 40GB Dynamic VHDX
+resource "hyperv_vhd" "empty_disk" {
+  path = "C:\\Hyper-V\\Virtual Hard Disks\\NewVM_Disk.vhdx"
+  size = 42949672960 # 40GB in bytes
+}
 
-ef92b778bafe771e89245b89ec5b4894bd454378f82855761545bf35a4d2d394
+# 2. Provision the VM Shell
+resource "hyperv_machine_instance" "vm_placeholder" {
+  name                = "Terraform-Provisioned-VM"
+  generation          = 2
+  processor_count     = 2
+  static_memory       = true
+  memory_startup_bytes = 4294967296 # 4GB
 
-b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+  # Attach the empty disk we created above
+  hard_disk_drives {
+    path = hyperv_vhd.empty_disk.path
+  }
 
-8846f7eaee8fb117ad06bdd830b7586c
-
-5f4dcc3b5aa765d61d8327deb882cf9
+  # Ensure it has a network card for when you are ready to PXE boot or ISO install
+  network_adaptors {
+    name        = "Primary Adapter"
+    switch_name = "Default Switch" # Replace with your actual Switch name
+  }
+}
