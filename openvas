@@ -1,6 +1,10 @@
 sudo -u postgres psql -d gvmd -c "
-INSERT INTO user_roles (user, role) 
-SELECT u.id, r.id FROM users u, roles r 
-WHERE u.name = 'gvm' AND r.name = 'Admin' 
-ON CONFLICT DO NOTHING;
+-- 1. Assign ownership of Scan Configs (Full and Fast, System Discovery, etc.)
+UPDATE configs SET owner = (SELECT id FROM users WHERE name = 'gvm') WHERE owner IS NULL OR owner = 0;
+
+-- 2. Assign ownership of Report Formats (PDF, CSV, XML, etc.)
+UPDATE report_formats SET owner = (SELECT id FROM users WHERE name = 'gvm') WHERE owner IS NULL OR owner = 0;
+
+-- 3. Assign ownership of Port Lists
+UPDATE port_lists SET owner = (SELECT id FROM users WHERE name = 'gvm') WHERE owner IS NULL OR owner = 0;
 "
