@@ -1,25 +1,18 @@
 sudo -u postgres psql -d gvmd -c "
--- 1. Insert 'Full and fast' Scan Config
+-- 1. Create a clean Scan Config object in schema 273
 INSERT INTO configs (uuid, name, comment, owner) 
 VALUES (
-  'daba56c8-73ec-11df-a475-002264764cea', 
-  'Full and fast', 
-  'The recommended default configuration for most scans.', 
+  '708e96be-50ae-11e1-9541-406186ea4fc5', 
+  'Custom Fast Scan', 
+  'Directly created base scan configuration.', 
   (SELECT id FROM users WHERE name = 'gvm')
 ) ON CONFLICT (uuid) DO UPDATE SET owner = (SELECT id FROM users WHERE name = 'gvm');
 
--- 2. Insert 'System Discovery' Scan Config
-INSERT INTO configs (uuid, name, comment, owner) 
-VALUES (
-  '08b55873-55c9-4503-9214-3d347b750a3e', 
-  'System Discovery', 
-  'Discovers target systems and open ports.', 
-  (SELECT id FROM users WHERE name = 'gvm')
-) ON CONFLICT (uuid) DO UPDATE SET owner = (SELECT id FROM users WHERE name = 'gvm');
-
--- 3. Link existing NVTs in your DB to 'Full and fast'
-INSERT INTO config_preferences (config, type, name, value)
-SELECT (SELECT id FROM configs WHERE uuid = 'daba56c8-73ec-11df-a475-002264764cea'), 'nvt', name, value 
-FROM nvt_preferences
+-- 2. Ensure all NVT families are permitted for this config
+INSERT INTO config_families (config, family)
+SELECT 
+  (SELECT id FROM configs WHERE uuid = '708e96be-50ae-11e1-9541-406186ea4fc5'), 
+  id 
+FROM families
 ON CONFLICT DO NOTHING;
 "
