@@ -1,6 +1,5 @@
 sudo -u postgres psql -d gvmd -c "
--- Update the Win10 task to use the Direct Task Config
 UPDATE tasks 
-SET config = (SELECT id FROM configs WHERE name = 'Direct Task Config')
-WHERE name ILIKE '%win10%' OR name ILIKE '%target%';
+SET status = 0 
+WHERE config = (SELECT id FROM configs WHERE name = 'Direct Task Config');
 "
