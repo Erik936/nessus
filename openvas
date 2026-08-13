@@ -6,7 +6,9 @@ VALUES (
   'User that owns imported feed objects',
   '18b7494a-4c67-4104-bd56-d985ecab32f4',
   (SELECT id FROM users WHERE name = 'gvm')
-)
-ON CONFLICT (uuid) DO UPDATE 
-SET value = '18b7494a-4c67-4104-bd56-d985ecab32f4';
+);
 "
+
+
+sudo -u postgres psql -d gvmd -c "SELECT id, name, value FROM settings WHERE uuid = '78ece702-8110-11e5-857e-28d24461215b';"
+
