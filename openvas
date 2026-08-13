@@ -1,14 +1,3 @@
-sudo -u postgres psql -d gvmd -c "
-INSERT INTO permissions (uuid, name, resource_type, resource, subject_type, subject, owner)
-SELECT 
-  gen_random_uuid(), 
-  'everything', 
-  'config', 
-  c.id, 
-  'user', 
-  u.id, 
-  u.id
-FROM configs c, users u
-WHERE c.id IN (1, 2) AND u.name = 'gvm'
-ON CONFLICT DO NOTHING;
-"
+sudo -u _gvm gvmd --modify-setting 78ece702-8110-11e5-857e-28d24461215b --value 18b7494a-4c67-4104-bd56-d985ecab32f4
+
+sudo -u postgres psql -d gvmd -c "SELECT * FROM settings WHERE uuid = '78ece702-8110-11e5-857e-28d24461215b';"
