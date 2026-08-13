@@ -1,34 +1,3 @@
-sudo -u postgres psql -d gvmd -c "
--- Delete any old/orphaned feed_import_owner settings to clear stale state
-DELETE FROM settings WHERE name = 'feed_import_owner' OR uuid = '78ece702-8110-11e5-857e-28d24461215b';
-
--- Clean insert with proper user ID binding
-INSERT INTO settings (uuid, name, comment, value, owner)
-VALUES (
-  '78ece702-8110-11e5-857e-28d24461215b',
-  'feed_import_owner',
-  'User that owns imported feed objects',
-  '18b7494a-4c67-4104-bd56-d985ecab32f4',
-  (SELECT id FROM users WHERE uuid = '18b7494a-4c67-4104-bd56-d985ecab32f4')
-);
-"
-
-
-sudo -u postgres psql -d gvmd -c "
-INSERT INTO permissions (uuid, name, resource_type, resource, subject_type, subject, owner)
-SELECT 
-  gen_random_uuid(), 
-  'everything', 
-  'system', 
-  0, 
-  'user', 
-  id, 
-  id
-FROM users WHERE uuid = '18b7494a-4c67-4104-bd56-d985ecab32f4'
-ON CONFLICT DO NOTHING;
-"
-
-
-sudo systemctl stop gvmd
-sudo pkill -9 gvmd
-sudo systemctl start gvmd
+[Service]
+ExecStart=
+ExecStart=/usr/sbin/gvmd --osp-vt-update=/run/ospd/ospd-openvas.sock --feed-owner=18b7494a-4c67-4104-bd56-d985ecab32f4
