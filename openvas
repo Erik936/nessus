@@ -1,3 +1,7 @@
+sudo mkdir -p /etc/systemd/system/gvmd.service.d/
+
+cat << 'EOF' | sudo tee /etc/systemd/system/gvmd.service.d/override.conf
 [Service]
 ExecStart=
-ExecStart=/usr/sbin/gvmd --osp-vt-update=/run/ospd/ospd-openvas.sock --feed-owner=18b7494a-4c67-4104-bd56-d985ecab32f4
+ExecStart=/usr/sbin/gvmd --osp-vt-update=/run/ospd/ospd-openvas.sock --listen-group=_gvm --feed-owner=18b7494a-4c67-4104-bd56-d985ecab32f4
+EOF
