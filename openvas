@@ -1,21 +1,10 @@
 sudo -u postgres psql -d gvmd -c "
--- Map available NVTs to 'Full and fast' (id = 1)
-INSERT INTO config_nvts (config, nvt)
-SELECT 1, id FROM nvts
-ON CONFLICT DO NOTHING;
+-- 1. Ensure 'gvm' user owns both configs
+UPDATE configs 
+SET owner = (SELECT id FROM users WHERE name = 'gvm') 
+WHERE id IN (1, 2);
 
--- Map available NVTs to 'System Discovery' (id = 2)
-INSERT INTO config_nvts (config, nvt)
-SELECT 2, id FROM nvts
-ON CONFLICT DO NOTHING;
-"
-
-
-sudo -u postgres psql -d gvmd -c "
--- Assign ownership and full permissions to user 'gvm'
-UPDATE configs SET owner = (SELECT id FROM users WHERE name = 'gvm') WHERE id IN (1, 2);
-
--- Insert permission entries for the configs if missing
+-- 2. Insert explicit permissions for user 'gvm' on both configs
 INSERT INTO permissions (uuid, name, resource_type, resource_id, subject_type, subject_id, owner)
 SELECT 
   gen_random_uuid(), 
