@@ -1,9 +1,24 @@
 sudo -u postgres psql -d gvmd -c "
-INSERT INTO configs (uuid, name, comment, owner) 
-VALUES (
-  '085569ce-73ed-11df-83c3-002264764cea', 
-  'Empty, static and fast', 
-  'An empty configuration template.', 
-  (SELECT id FROM users WHERE name = 'gvm')
-) ON CONFLICT (uuid) DO NOTHING;
+-- 1. Insert empty selector for 'Empty, static and fast' template
+INSERT INTO nvt_selectors (config, family, type, name, exclude)
+SELECT 
+  (SELECT id FROM configs WHERE uuid = '085569ce-73ed-11df-83c3-002264764cea'),
+  0,
+  0,
+  'empty',
+  0
+ON CONFLICT DO NOTHING;
+
+-- 2. Ensure permissions exist for the template object
+INSERT INTO permissions (uuid, name, resource_type, resource, subject_type, subject, owner)
+SELECT 
+  gen_random_uuid(), 
+  'everything', 
+  'config', 
+  (SELECT id FROM configs WHERE uuid = '085569ce-73ed-11df-83c3-002264764cea'), 
+  'user', 
+  u.id, 
+  u.id
+FROM users u WHERE u.name = 'gvm'
+ON CONFLICT DO NOTHING;
 "
