@@ -1,6 +1,5 @@
 sudo -u postgres psql -d gvmd -c "
-INSERT INTO port_lists (uuid, name, comment, owner) VALUES 
-('33d0cd82-57c6-11e1-8ed1-406186ea4fc5', 'All IANA assigned TCP', 'Includes all TCP ports assigned by IANA.', (SELECT id FROM users WHERE name = 'gvm')),
-('730534e6-57c6-11e1-bf3f-406186ea4fc5', 'All IANA assigned TCP and UDP', 'Includes all TCP and UDP ports assigned by IANA.', (SELECT id FROM users WHERE name = 'gvm'))
-ON CONFLICT DO NOTHING;
+DELETE FROM settings WHERE name = 'feed_import_owner' OR uuid = '78ece74c-2583-11e1-ae7e-406186ea4fc5';
+INSERT INTO settings (uuid, name, value) 
+VALUES ('78ece74c-2583-11e1-ae7e-406186ea4fc5', 'feed_import_owner', (SELECT uuid FROM users WHERE name = 'gvm'));
 "
