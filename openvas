@@ -1,5 +1,8 @@
 sudo -u postgres psql -d gvmd -c "
 UPDATE tasks 
-SET status = 0 
-WHERE config = (SELECT id FROM configs WHERE name = 'Direct Task Config');
+SET config = (SELECT id FROM configs WHERE name = 'Direct Task Config')
+WHERE config IS NULL OR name ILIKE '%win10%' OR name ILIKE '%target%';
 "
+
+sudo -u postgres psql -d gvmd -c "SELECT id, name, config FROM tasks;"
+
