@@ -1,13 +1,6 @@
-sudo -u postgres psql -d gvmd -c "
--- 1. Insert 'Full and Fast' Scan Config template
-INSERT INTO configs (uuid, name, comment, owner) VALUES 
-('daba56c8-73ec-11df-a475-002264764cea', 'Full and fast', 'The recommended default configuration for most scans.', (SELECT id FROM users WHERE name = 'gvm')),
-('08b55873-55c9-4503-9214-3d347b750a3e', 'System Discovery', 'Discovers target systems and open ports.', (SELECT id FROM users WHERE name = 'gvm'))
-ON CONFLICT DO NOTHING;
+sudo -u _gvm greenbone-feed-sync --type GVMD_DATA --download-type curl
+sudo -u _gvm greenbone-feed-sync --type SCAP --download-type curl
 
--- 2. Insert standard Report Formats
-INSERT INTO report_formats (uuid, name, extension, content_type, summary, owner) VALUES
-('a99479e2-2906-11e0-8208-406186ea4fc5', 'PDF', 'pdf', 'application/pdf', 'Portable Document Format', (SELECT id FROM users WHERE name = 'gvm')),
-('c1616368-7a09-11e0-8b63-406186ea4fc5', 'TXT', 'txt', 'text/plain', 'Plain Text Report', (SELECT id FROM users WHERE name = 'gvm'))
-ON CONFLICT DO NOTHING;
-"
+sudo -u _gvm gvmd --rebuild-gvmd-data=all
+
+sudo -u _gvm gvmd --get-configs
