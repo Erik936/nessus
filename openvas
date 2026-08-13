@@ -1,21 +1,20 @@
 sudo -u postgres psql -d gvmd -c "
--- 1. Insert empty selector for 'Empty, static and fast' template
-INSERT INTO nvt_selectors (config, family, type, name, exclude)
-SELECT 
-  (SELECT id FROM configs WHERE uuid = '085569ce-73ed-11df-83c3-002264764cea'),
-  0,
-  0,
-  'empty',
-  0
-ON CONFLICT DO NOTHING;
+-- 1. Insert a direct custom scan config row
+INSERT INTO configs (uuid, name, comment, owner)
+VALUES (
+  gen_random_uuid(),
+  'Direct Task Config',
+  'Standalone scan config bypassing feed templates.',
+  (SELECT id FROM users WHERE name = 'gvm')
+);
 
--- 2. Ensure permissions exist for the template object
+-- 2. Grant explicit permissions so GSA loads it immediately
 INSERT INTO permissions (uuid, name, resource_type, resource, subject_type, subject, owner)
 SELECT 
   gen_random_uuid(), 
   'everything', 
   'config', 
-  (SELECT id FROM configs WHERE uuid = '085569ce-73ed-11df-83c3-002264764cea'), 
+  (SELECT id FROM configs WHERE name = 'Direct Task Config'), 
   'user', 
   u.id, 
   u.id
